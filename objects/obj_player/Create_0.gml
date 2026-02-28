@@ -33,6 +33,11 @@ yscale = 1;
 colisoes = [obj_wall, obj_plat];
 sprites  = [spr_player_idle, spr_player_walk, spr_player_fall, spr_player_jump, spr_player_walk];
 
+// Buffer Jump
+
+
+// Coyote Jump
+
 keyboard_set_map(ord("W"), vk_up);
 keyboard_set_map(ord("S"), vk_down);
 keyboard_set_map(ord("D"), vk_right);

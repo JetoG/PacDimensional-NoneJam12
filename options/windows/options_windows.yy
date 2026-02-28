@@ -1,6 +1,12 @@
 {
   "$GMWindowsOptions":"v1",
   "%Name":"Windows",
+  "ConfigValues":{
+    "Normal":{
+      "option_windows_company_info":"JetDev",
+      "option_windows_display_name":"Pac Dimensional",
+    },
+  },
   "name":"Windows",
   "option_windows_allow_fullscreen_switching":false,
   "option_windows_borderless":false,
