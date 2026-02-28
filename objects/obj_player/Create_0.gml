@@ -24,6 +24,14 @@ carga  = 1;
 dcor   = 255; // Saturação do Dash/Cor
 dire   = 0; // Direção do Dash
 
+// Buffer Jump
+buff_t  = 6;
+buff_tt = 0;
+
+// Coyote Jump
+coyo_t  = 6;
+coyo_tt = 0;
+
 // Pulos
 pulo = 1;
 
@@ -32,11 +40,6 @@ yscale = 1;
 
 colisoes = [obj_wall, obj_plat];
 sprites  = [spr_player_idle, spr_player_walk, spr_player_fall, spr_player_jump, spr_player_walk];
-
-// Buffer Jump
-
-
-// Coyote Jump
 
 keyboard_set_map(ord("W"), vk_up);
 keyboard_set_map(ord("S"), vk_down);
@@ -63,19 +66,12 @@ movement = function () {
     
     if (!chao) {
         velv += grav;
-        
-        if (double_jump and jump and pulo > 0) {
-            velv = -jspd;
-            squash(0.6, 1.4);
-            pulo--;
-        }
     } else {
         velv = 0;
-        if (jump) {
-            velv = -jspd;
-            squash(0.6, 1.4);
-        }
     }
+    
+    coyote_buffer_jump();
+    velv = clamp(velv, -jspd, jspd * 2);
 }
 
 colision = function () {
@@ -266,6 +262,37 @@ device = function () {
                 }
             }
         }
+    }
+}
+
+coyote_buffer_jump = function () {
+    // Coyote Jump
+    if (chao) {
+        coyo_tt = coyo_t;
+    } else if (coyo_tt > 0) {
+        coyo_tt--;
+    }
+    
+    // Buffer Pulo
+    if (jump) {
+        buff_tt = buff_t;
+    }
+    
+    if (buff_tt > 0) {
+        buff_tt--;
+    }
+    
+    if (buff_tt > 0 && (chao || coyo_tt > 0)) {
+        velv = -jspd;
+        buff_tt = 0;
+        coyo_tt = 0;
+        squash(0.8, 1.2);
+    }
+    
+    // Double Jump
+    if (!chao && coyo_tt <= 0 && double_jump && jump && pulo > 0) {
+        velv = -jspd;
+        pulo--;
     }
 }
 
