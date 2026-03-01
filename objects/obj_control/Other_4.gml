@@ -64,7 +64,7 @@ switch (room) {
     break;
     case rm_fase_9:
         if (!instance_exists(obj_device)) {
-            var _hud = instance_create_layer(2, 2, "HUD", obj_device);
+            var _hud = instance_create_layer(2, 101, "HUD", obj_device);
             _hud.cargas_inicial = 12;
             _hud.cargas = 12;
         }

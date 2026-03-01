@@ -8,3 +8,9 @@ var _speed = max(0.05, cargas_inicial * 0.01);
 
 cargas_g = approach(cargas_g, cargas, _speed);
 cargas_g = clamp(cargas_g, 0, cargas_inicial);
+
+if (place_meeting(x, y, [obj_player, obj_batery, obj_door, obj_pack])) {
+    image_alpha = 0.3;
+} else {
+    image_alpha = 1;
+}

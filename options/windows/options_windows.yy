@@ -5,6 +5,7 @@
     "Normal":{
       "option_windows_company_info":"JetDev",
       "option_windows_display_name":"Pac Dimensional",
+      "option_windows_start_fullscreen":"false",
     },
   },
   "name":"Windows",

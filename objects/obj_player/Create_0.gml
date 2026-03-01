@@ -59,7 +59,7 @@ inputs = function () {
     dash  = keyboard_check_pressed(vk_alt);
 };
 
-movement = function () {
+movement = function () { 
     if (rglf != 0) dir = sign(rglf);
     
     velh = rglf * mspd;
@@ -155,7 +155,11 @@ state_machine = function () {
             }
             
             if (has_dash and dash and carga > 0) {
-                dire = point_direction(0, 0, rglf, updw);
+                if (rglf == 0 && updw == 0) {
+                    dire = (dir == 1) ? 0 : 180;
+                } else {
+                    dire = point_direction(0, 0, rglf, updw);
+                }
                 estado = states.dash;
                 carga--;
             }
@@ -178,11 +182,24 @@ state_machine = function () {
             }
             
             if (has_dash and dash and carga > 0) {
-                dire = point_direction(0, 0, rglf, updw);
+                if (rglf == 0 && updw == 0) {
+                    dire = (dir == 1) ? 0 : 180;
+                } else {
+                    dire = point_direction(0, 0, rglf, updw);
+                }
                 estado = states.dash;
                 carga--;
             }
             
+            // Criando poeira ao andar
+            var _chance = random(99);
+            if (_chance > 90) {
+                for (var i = 0; i < irandom_range(2, 6); i++) {
+                	var _x = random_range(x - sprite_width / 2, x + sprite_width / 2);
+                    instance_create_layer(_x, y, "Colisores", obj_fx_smoke);
+                }
+            }
+                        
             movement();
         break;
         case 2:
@@ -194,7 +211,11 @@ state_machine = function () {
             }
             
             if (has_dash and dash and carga > 0) {
-                dire = point_direction(0, 0, rglf, updw);
+                if (rglf == 0 && updw == 0) {
+                    dire = (dir == 1) ? 0 : 180;
+                } else {
+                    dire = point_direction(0, 0, rglf, updw);
+                }
                 estado = states.dash;
                 carga--;
             }
@@ -213,7 +234,11 @@ state_machine = function () {
             }
             
             if (has_dash and dash and carga > 0) {
-                dire = point_direction(0, 0, rglf, updw);
+                if (rglf == 0 && updw == 0) {
+                    dire = (dir == 1) ? 0 : 180;
+                } else {
+                    dire = point_direction(0, 0, rglf, updw);
+                }
                 estado = states.dash;
                 carga--;
             }
@@ -221,6 +246,21 @@ state_machine = function () {
             movement();
         break;
         case 4: 
+            inputs();
+            
+            // Cancelando Dash pra dar o double jump
+            if (double_jump and jump and pulo > 0) {
+                velv = -jspd;
+                pulo--;
+                
+                // Cancelar dash
+                t_dash = dash_t;
+                estado = states.jump;
+                
+                squash(0.8, 1.2);
+                break;
+            }
+            
             t_dash--;
             
             velh = lengthdir_x(leng, dire);
@@ -233,6 +273,9 @@ state_machine = function () {
                 squash(1.3, .7);
             }
             
+            // Criando o Rastro
+            var _fx = instance_create_layer(x, y - random_range(2, 10), "Colisores", obj_fx_trail);
+             
             if (t_dash <= 0) {
                 estado = states.walk;
                 t_dash = dash_t;
@@ -243,22 +286,22 @@ state_machine = function () {
             }
         break;
     }
+    if (y - sprite_height >= room_height) {
+        global.mundo = false;
+        room_restart();
+    }
 }
 
+tp = noone;
 device = function () {
-    if (keyboard_check_pressed(vk_shift)) {
+    if (instance_exists(obj_teleport)) return;
+        
+    if (keyboard_check_pressed(vk_shift) or keyboard_check_pressed(ord("L"))) {
         if (instance_exists(obj_device)) {
             with (obj_device) {
             	if (cargas != 0) {
-                    global.mundo = !global.mundo;
-                    layer_set_visible(layer_get_id("Sombrio"), global.mundo);
-                    layer_set_visible(layer_get_id("SombrioExtras"), global.mundo);
-                    layer_set_visible(layer_get_id("BgSombrio"), global.mundo);
-                    layer_set_visible(layer_get_id("BgSombrioParallax"), global.mundo);
-                    layer_set_visible(layer_get_id("Normal"), !global.mundo);
-                    layer_set_visible(layer_get_id("NormalExtras"), !global.mundo);
-                    layer_set_visible(layer_get_id("BgNormal"), !global.mundo);
                     cargas--;
+                    instance_create_layer(other.x, other.y - (sprite_get_height(spr_player_idle) / 2), "HUD", obj_teleport);
                 }
             }
         }
